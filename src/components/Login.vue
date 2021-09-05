@@ -6,16 +6,20 @@
         src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
         class="profile-img-card"
       />
-      <Form @submit="handleLogin" :validation-schema="schema">
+      <form @submit="handleLogin" :validation-schema="schema">
         <div class="form-group">
           <label for="username">Username</label>
-          <Field name="username" type="text" class="form-control" />
-          <ErrorMessage name="username" class="error-feedback" />
+          <ValidationProvider rules="required|alpha|max:10" v-slot="{errors}">
+          <input name="username" type="text" class="form-control" />
+          <span>{{ errors[0] }}</span>
+          </ValidationProvider>
         </div>
         <div class="form-group">
           <label for="password">Password</label>
-          <Field name="password" type="password" class="form-control" />
-          <ErrorMessage name="password" class="error-feedback" />
+          <ValidationProvider rules="required" v-slot="{errors}">
+          <input name="password" type="password" class="form-control" />
+          <span>{{ errors[0] }}</span>
+          </ValidationProvider>
         </div>
 
         <div class="form-group">
@@ -33,33 +37,38 @@
             {{ message }}
           </div>
         </div>
-      </Form>
+      </form>
     </div>
   </div>
 </template>
 
 <script>
-import { Form, Field, ErrorMessage } from "vee-validate/dist/rules";
-//import * as VeeValidate from 'vee-validate';
-import * as yup from "yup";
+import { ValidationProvider } from "vee-validate";
+// import * as rules from 'vee-validate/dist/rules';
+
+// Object.keys(rules).forEach(rule => {
+//   // eslint-disable-next-line
+//   extend(rule, ...rules[rule]);
+// });
+
+// for (let [rule, validation] of Object.entries(rules)) {
+//   // eslint-disable-next-line
+//   extend(rule, {
+//     ...validation
+//   })
+// }
 
 export default {
   name: "Login",
   components: {
-    Form,
-    Field,
-    ErrorMessage,
+    ValidationProvider
   },
   data() {
-    const schema = yup.object().shape({
-      username: yup.string().required("Username is required!"),
-      password: yup.string().required("Password is required!"),
-    });
-
     return {
       loading: false,
       message: "",
-      schema,
+      username: "",
+      password: "",
     };
   },
   computed: {

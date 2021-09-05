@@ -1,4 +1,6 @@
-import { createWebHistory, createRouter } from "vue-router";
+// import { createWebHistory, createRouter } from "vue-router";
+import Vue from 'vue'
+import VueRouter from "vue-router";
 import Home from "./components/Home.vue";
 import Login from "./components/Login.vue";
 import Register from "./components/Register.vue";
@@ -9,6 +11,7 @@ const BoardModerator = () => import("./components/BoardModerator.vue")
 const BoardUser = () => import("./components/BoardUser.vue")
 const ChatStatus = () => import("./components/ChatStatus.vue")
 
+Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
@@ -59,9 +62,13 @@ const routes = [
   },
 ];
 
-const router = createRouter({
-  history: createWebHistory(),
-  routes,
+// const router = createRouter({
+//   history: createWebHistory(),
+//   routes,
+// });
+
+const router = new VueRouter({
+  routes
 });
 
 // router.beforeEach((to, from, next) => {

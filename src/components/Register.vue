@@ -6,22 +6,28 @@
         src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
         class="profile-img-card"
       />
-      <Form @submit="handleRegister" :validation-schema="schema">
+      <form @submit="handleRegister">
         <div v-if="!successful">
           <div class="form-group">
             <label for="username">Username</label>
-            <Field name="username" type="text" class="form-control" />
-            <ErrorMessage name="username" class="error-feedback" />
+            <ValidationProvider rules="required|alpha|max:10" v-slot="{errors}">
+            <input name="username" v-model="username" type="text" class="form-control" />
+            <span>{{ errors[0] }}</span>
+            </ValidationProvider>
           </div>
           <div class="form-group">
             <label for="email">Email</label>
-            <Field name="email" type="email" class="form-control" />
-            <ErrorMessage name="email" class="error-feedback" />
+            <ValidationProvider rules="required|email" v-slot="{errors}">
+            <input name="email" v-model="email" type="email" class="form-control" />
+            <span>{{ errors[0] }}</span>
+            </ValidationProvider>
           </div>
           <div class="form-group">
             <label for="password">Password</label>
-            <Field name="password" type="password" class="form-control" />
-            <ErrorMessage name="password" class="error-feedback" />
+            <ValidationProvider rules="required" v-slot="{errors}">
+            <input name="password" v-model="password" type="password" class="form-control" />
+            <span>{{ errors[0] }}</span>
+            </ValidationProvider>
           </div>
 
           <div class="form-group">
@@ -34,7 +40,7 @@
             </button>
           </div>
         </div>
-      </Form>
+      </form>
 
       <div
         v-if="message"
@@ -48,40 +54,35 @@
 </template>
 
 <script>
-import { Form, Field, ErrorMessage } from "vee-validate";
-import * as yup from "yup";
+import { ValidationProvider } from "vee-validate";
+// import * as rules from 'vee-validate/dist/rules';
+
+// Object.keys(rules).forEach(rule => {
+//   // eslint-disable-next-line
+//   extend(rule, ...rules[rule]);
+// });
+
+// for (let [rule, validation] of Object.entries(rules)) {
+//   // eslint-disable-next-line
+//   extend(rule, {
+//     ...validation
+//   })
+// }
 
 export default {
   name: "Register",
   components: {
-    Form,
-    Field,
-    ErrorMessage,
+    ValidationProvider
   },
   data() {
-    const schema = yup.object().shape({
-      username: yup
-        .string()
-        .required("Username is required!")
-        .min(3, "Must be at least 3 characters!")
-        .max(20, "Must be maximum 20 characters!"),
-      email: yup
-        .string()
-        .required("Email is required!")
-        .email("Email is invalid!")
-        .max(50, "Must be maximum 50 characters!"),
-      password: yup
-        .string()
-        .required("Password is required!")
-        .min(6, "Must be at least 6 characters!")
-        .max(40, "Must be maximum 40 characters!"),
-    });
-
     return {
       successful: false,
       loading: false,
       message: "",
-      schema,
+      username: "",
+      email: "",
+      password: "",
+
     };
   },
   computed: {
