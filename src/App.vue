@@ -5,7 +5,7 @@
       <div class="navbar-nav mr-auto">
         <li class="nav-item">
           <router-link to="/home" class="nav-link">
-            <!-- <font-awesome-icon icon="home" />  -->Home
+            Home
           </router-link>
         </li>
         <li v-if="showAdminBoard" class="nav-item">
@@ -25,12 +25,12 @@
       <div v-if="!currentUser" class="navbar-nav ml-auto">
         <li class="nav-item">
           <router-link to="/register" class="nav-link">
-            <!-- <font-awesome-icon icon="user-plus" />  -->Sign Up
+            Sign Up
           </router-link>
         </li>
         <li class="nav-item">
           <router-link to="/login" class="nav-link">
-            <!-- <font-awesome-icon icon="sign-in-alt" />  -->Login
+            Login
           </router-link>
         </li>
       </div>
@@ -48,7 +48,7 @@
           </a>
         </li>
       </div>
-    </nav>
+    </nav> -->
 
     <v-card
       class="mx-auto overflow-hidden"
@@ -86,7 +86,7 @@
             </v-list-item>
 
             
-            <router-link to="/admin" class="nav-link">
+            <router-link to="/admin" class="nav-link" v-if="showModeratorBoard" >
               <v-list-item>
                 <v-list-item-icon>
                     <v-icon>mdi-admin</v-icon>
@@ -96,23 +96,69 @@
             </router-link>
 
             
-            <v-list-item>
+            <v-list-item v-if="showModeratorBoard">
               <v-list-item-icon>
-                <router-link to="/home" class="nav-link">
-                  <v-icon>mdi-home</v-icon>
+                <router-link to="/mod" class="nav-link">
+                  <v-icon>mdi-mod</v-icon>
                 </router-link>
               </v-list-item-icon>
-              <v-list-item-title>Home</v-list-item-title>
+              <v-list-item-title>Moderator Board</v-list-item-title>
             </v-list-item>
 
-            <v-list-item>
+            <v-list-item v-if="currentUser">
               <v-list-item-icon>
-                <router-link to="/home" class="nav-link">
-                  <v-icon>mdi-account</v-icon>
+                <router-link to="/user" class="nav-link">
+                  <v-icon>mdi-user</v-icon>
                 </router-link>
               </v-list-item-icon>
-              <v-list-item-title>Account</v-list-item-title>
+              <v-list-item-title>User</v-list-item-title>
             </v-list-item>
+
+            <v-list-item v-if="currentUser">
+              <v-list-item-icon>
+                <router-link to="/chat" class="nav-link">
+                  <v-icon>mdi-chat</v-icon>
+                </router-link>
+              </v-list-item-icon>
+              <v-list-item-title>ChatList</v-list-item-title>
+            </v-list-item>
+
+            <v-list-item v-if="!currentUser">
+              <v-list-item-icon>
+                <router-link to="/register" class="nav-link">
+                  <v-icon>mdi-sign-up</v-icon>
+                </router-link>
+              </v-list-item-icon>
+              <v-list-item-title>Sign Up</v-list-item-title>
+            </v-list-item>
+
+            <v-list-item v-if="!currentUser">
+              <v-list-item-icon>
+                <router-link to="/login" class="nav-link">
+                  <v-icon>mdi-login</v-icon>
+                </router-link>
+              </v-list-item-icon>
+              <v-list-item-title>Log In</v-list-item-title>
+            </v-list-item>
+
+            <v-list-item v-if="currentUser">
+              <v-list-item-icon>
+                <router-link to="/profile" class="nav-link">
+                  <v-icon>mdi-profile</v-icon>
+                </router-link>
+              </v-list-item-icon>
+              <v-list-item-title>Profile</v-list-item-title>
+            </v-list-item>
+
+            <v-list-item v-if="currentUser">
+              <v-list-item-icon>
+                <router-link class="nav-link" @click.prevent="logOut">
+                  <v-icon>mdi-sign-out</v-icon>
+                </router-link>
+              </v-list-item-icon>
+              <v-list-item-title>Log Out</v-list-item-title>
+            </v-list-item>
+
           </v-list-item-group>
         </v-list>
       </v-navigation-drawer>
@@ -140,7 +186,7 @@
                 </thead>
                 <tbody>
                   <tr
-                    v-for="item in items"
+                    v-for="item in listSample"
                     :key="item.first_name"
                   >
                     <td>{{ item.age }}</td>
@@ -205,6 +251,7 @@
 
           </template>
         </div>
+        <router-view />
       </div>
 
 
@@ -270,6 +317,63 @@
     </v-btn>
   </v-form>
 
+
+    <v-card height="400px">
+      <v-footer
+        v-bind="localAttrs"
+        :padless="padless"
+      >
+        <v-card
+          flat
+          tile
+          width="100%"
+          class="red lighten-1 text-center"
+        >
+          <v-card-text>
+            <v-btn
+              v-for="icon in icons"
+              :key="icon"
+              class="mx-4"
+              icon
+            >
+              <v-icon size="24px">
+                {{ icon }}
+              </v-icon>
+            </v-btn>
+          </v-card-text>
+
+          <v-divider></v-divider>
+
+          <v-card-text class="white--text">
+            {{ new Date().getFullYear() }} — <strong>Vuetify</strong>
+          </v-card-text>
+        </v-card>
+      </v-footer>
+
+      <v-row
+        align="center"
+        justify="center"
+        class="ma-12"
+      >
+        <v-col
+          cols="12"
+          md="8"
+        >
+          <v-select
+            v-model="variant"
+            :items="items"
+            clearable
+            label="Variant"
+          ></v-select>
+
+          <v-checkbox
+            v-model="padless"
+            hide-details
+            label="Padless"
+          ></v-checkbox>
+        </v-col>
+      </v-row>
+    </v-card>
   </div>
 
 
@@ -281,7 +385,7 @@
 export default {
   data() {
     return {
-      items: [
+      listSample: [
         { age: 40, first_name: 'Dickerson', last_name: 'Macdonald' },
         { age: 21, first_name: 'Larsen', last_name: 'Shaw' },
         { age: 89, first_name: 'Geneva', last_name: 'Wilson' },
@@ -317,7 +421,18 @@ export default {
         return this.currentUser['roles'].includes('ROLE_MODERATOR');
       }
       return false;
-    }
+    },
+    localAttrs() {
+      const attrs = {}
+
+      if (this.variant === 'default') {
+        attrs.absolute = false
+        attrs.fixed = false
+      } else {
+        attrs[this.variant] = true
+      }
+      return attrs
+    },
   },
   methods: {
     logOut() {
