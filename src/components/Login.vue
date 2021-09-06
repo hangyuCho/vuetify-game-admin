@@ -6,7 +6,7 @@
         src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
         class="profile-img-card"
       />
-      <form @submit="handleLogin" :validation-schema="schema">
+      <form @submit="handleLogin">
         <div class="form-group">
           <label for="username">Username</label>
           <ValidationProvider rules="required|alpha|max:10" v-slot="{errors}">
