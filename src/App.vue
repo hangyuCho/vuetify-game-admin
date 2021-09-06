@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <nav class="navbar navbar-expand navbar-dark bg-dark">
+    <nav class="navbar navbar-expand">
       <a href="/" class="navbar-brand">Higashinomirai</a>
       <div class="navbar-nav mr-auto">
         <li class="nav-item">
@@ -56,11 +56,11 @@
     >
       <v-app-bar
         color="deep-purple"
-        dark
+        
       >
         <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
 
-        <v-toolbar-title>Title</v-toolbar-title>
+        <v-toolbar-title>Admin Page</v-toolbar-title>
       </v-app-bar>
 
       <v-navigation-drawer
@@ -118,12 +118,12 @@
       </v-navigation-drawer>
       
 
+
+    </v-card>
       <div class="container">
-        <router-view />
         <div>
-          <!-- <b-table striped hover :items="items"></b-table> -->
           <template>
-            <v-simple-table dark>
+            <v-simple-table >
               <template v-slot:default>
                 <thead>
                   <tr>
@@ -150,12 +150,131 @@
                 </tbody>
               </template>
             </v-simple-table>
+
+
+            <router-view />
+
+
+            <v-btn
+              :key="activeFab.icon"
+              :color="activeFab.color"
+              fab
+              large
+              
+              bottom
+              right
+              class="v-btn--fix"
+            >
+              <v-icon>{{ activeFab.icon }}</v-icon>
+            </v-btn>
+            <v-footer
+              
+              padless
+            >
+              <v-card
+                flat
+                tile
+                class="indigo lighten-1 white--text text-center"
+              >
+                <v-card-text>
+                  <v-btn
+                    v-for="icon in icons"
+                    :key="icon"
+                    class="mx-4 white--text"
+                    icon
+                  >
+                    <v-icon size="24px">
+                      {{ icon }}
+                    </v-icon>
+                  </v-btn>
+                </v-card-text>
+
+                <v-card-text class="white--text pt-0">
+                  Phasellus feugiat arcu sapien, et iaculis ipsum elementum sit amet. Mauris cursus commodo interdum. Praesent ut risus eget metus luctus accumsan id ultrices nunc. Sed at orci sed massa consectetur dignissim a sit amet dui. Duis commodo vitae velit et faucibus. Morbi vehicula lacinia malesuada. Nulla placerat augue vel ipsum ultrices, cursus iaculis dui sollicitudin. Vestibulum eu ipsum vel diam elementum tempor vel ut orci. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
+                </v-card-text>
+
+                <v-divider></v-divider>
+
+                <v-card-text class="white--text">
+                  {{ new Date().getFullYear() }} — <strong>Admin Page</strong>
+                </v-card-text>
+              </v-card>
+            </v-footer>
+
+
+
           </template>
         </div>
       </div>
-    </v-card>
+
+
+
+
+  <v-form
+    ref="form"
+    v-model="valid"
+    lazy-validation
+  >
+    <v-text-field
+      v-model="name"
+      :counter="10"
+      :rules="nameRules"
+      label="Name"
+      required
+    ></v-text-field>
+
+    <v-text-field
+      v-model="email"
+      :rules="emailRules"
+      label="E-mail"
+      required
+    ></v-text-field>
+
+    <v-select
+      v-model="select"
+      :items="items"
+      :rules="[v => !!v || 'Item is required']"
+      label="Item"
+      required
+    ></v-select>
+
+    <v-checkbox
+      v-model="checkbox"
+      :rules="[v => !!v || 'You must agree to continue!']"
+      label="Do you agree?"
+      required
+    ></v-checkbox>
+
+    <v-btn
+      :disabled="!valid"
+      color="success"
+      class="mr-4"
+      @click="validate"
+    >
+      Validate
+    </v-btn>
+
+    <v-btn
+      color="error"
+      class="mr-4"
+      @click="reset"
+    >
+      Reset Form
+    </v-btn>
+
+    <v-btn
+      color="warning"
+      @click="resetValidation"
+    >
+      Reset Validation
+    </v-btn>
+  </v-form>
 
   </div>
+
+
+
+  
 </template>
 
 <script>
@@ -170,9 +289,20 @@ export default {
       ],
       drawer: false,
       group: null,
+      icons: [
+      'mdi-facebook',
+      'mdi-twitter',
+      'mdi-linkedin',
+      'mdi-instagram',
+    ],
+    fab: false,
+    hidden: false,
     }
   },
   computed: {
+    activeFab () {
+      return { color: 'success', icon: 'mdi-chevron-up' }
+    },
     currentUser() {
       return this.$store.state.auth.user;
     },
@@ -197,3 +327,11 @@ export default {
   }
 };
 </script>
+<style>
+  #lateral .v-btn--fix {
+    right: 16px;
+    bottom: 16px;
+    position: absolute;
+    margin: 0 0 16px 16px;
+  }
+</style>
